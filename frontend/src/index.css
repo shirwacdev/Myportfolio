@@ -1,0 +1,84 @@
+@import url("https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap");
+@import "tailwindcss";
+@custom-variant dark (&:where(.dark, .dark *));
+
+:root {
+  --bg-primary: #f4f6fa;
+  --section-alt: #eef2f7;
+  --surface-overlay: #f9fbff;
+  --surface-card: #ffffff;
+  --surface-muted: #edf2f9;
+  --surface-accent: #dce8f8;
+  --border-soft: #d8e0eb;
+  --text-primary: #101f3a;
+  --text-muted: #63728e;
+  --brand-primary: #1c8fe3;
+  --brand-strong: #0f5db3;
+  --brand-deep: #03255f;
+  --brand-tint: rgba(28, 143, 227, 0.14);
+  --brand-glow: rgba(28, 143, 227, 0.2);
+  --shadow-soft: 0 12px 24px -20px rgba(21, 42, 80, 0.35);
+  --shadow-hard: 0 30px 52px -34px rgba(21, 42, 80, 0.45);
+}
+
+.dark {
+  --bg-primary: #061020;
+  --section-alt: #0b172d;
+  --surface-overlay: #0a1426;
+  --surface-card: #101d34;
+  --surface-muted: #162640;
+  --surface-accent: #1a3b68;
+  --border-soft: #233959;
+  --text-primary: #edf4ff;
+  --text-muted: #9db0cd;
+  --brand-primary: #4aa3ef;
+  --brand-strong: #6bb6f5;
+  --brand-deep: #041a45;
+  --brand-tint: rgba(74, 163, 239, 0.22);
+  --brand-glow: rgba(74, 163, 239, 0.34);
+  --shadow-soft: 0 16px 32px -26px rgba(0, 0, 0, 0.72);
+  --shadow-hard: 0 34px 60px -38px rgba(0, 0, 0, 0.8);
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  font-family: "Manrope", "Segoe UI", sans-serif;
+  background: var(--bg-primary);
+  color: var(--text-primary);
+  text-rendering: geometricPrecision;
+}
+
+.font-heading {
+  font-family: "Manrope", "Trebuchet MS", sans-serif;
+}
+
+.font-code {
+  font-family: "Manrope", "Segoe UI", sans-serif;
+}
+
+.section-kicker {
+  margin: 0;
+  color: var(--brand-primary);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+}
+
+::selection {
+  background: var(--brand-primary);
+  color: #ffffff;
+}
+
+.theme-transition,
+.theme-transition *,
+.theme-transition *::before,
+.theme-transition *::after {
+  transition-property: background-color, border-color, color, fill, stroke, box-shadow;
+  transition-duration: 320ms;
+  transition-timing-function: ease;
+}

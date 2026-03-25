@@ -1,0 +1,21 @@
+Shirwac Dev - Curriculum Vitae
+
+Role: Full Stack Engineer
+Location: Nairobi, Kenya
+Email: shirwac.dev@gmail.com
+
+Core Stack:
+- TypeScript
+- React / Next.js
+- Tailwind CSS
+- Node.js
+- Express.js
+- MongoDB
+
+Focus Areas:
+- Scalable web architecture
+- Premium interface design
+- API engineering
+- Product delivery
+
+This is a placeholder CV file. Replace with your final PDF CV as needed.
