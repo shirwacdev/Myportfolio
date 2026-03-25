@@ -2,7 +2,7 @@ import { NavLink, useNavigate } from 'react-router-dom'
 import { useMemo, useState } from 'react'
 import ThemeToggle from '../../components/ThemeToggle'
 import { ADMIN_NAV_ITEMS } from '../config/nav'
-import { clearAdminSession, getAdminUser } from '../utils/authSession'
+import { clearAdminSession, getAdminUser, hasAdminPermission } from '../utils/authSession'
 
 const navLinkClass = ({ isActive }) =>
   [
@@ -18,6 +18,10 @@ const AdminLayout = ({ title, description, children }) => {
 
   const pageTitle = useMemo(() => title || 'Admin Dashboard', [title])
   const adminUser = useMemo(() => getAdminUser(), [])
+  const visibleNavItems = useMemo(
+    () => ADMIN_NAV_ITEMS.filter((item) => !item.permission || hasAdminPermission(item.permission)),
+    [],
+  )
 
   const onLogout = () => {
     clearAdminSession()
@@ -50,7 +54,7 @@ const AdminLayout = ({ title, description, children }) => {
           </div>
 
           <nav className="mt-6 space-y-1.5">
-            {ADMIN_NAV_ITEMS.map((item) => (
+            {visibleNavItems.map((item) => (
               <NavLink
                 key={item.path}
                 to={item.path}

@@ -1,4 +1,4 @@
-﻿const express = require('express')
+const express = require('express')
 const { body, param } = require('express-validator')
 const {
   getSkills,
@@ -9,6 +9,8 @@ const {
 } = require('../controllers/skillController')
 const validateRequest = require('../middleware/validateRequest')
 const requireAuth = require('../middleware/requireAuth')
+const authorize = require('../middleware/authorize')
+const { PERMISSIONS } = require('../utils/permissions')
 
 const router = express.Router()
 
@@ -24,8 +26,8 @@ const idValidation = [param('id').isMongoId().withMessage('Invalid id')]
 
 router.get('/', getSkills)
 router.get('/:id', [...idValidation, validateRequest], getSkillById)
-router.post('/', [requireAuth, ...skillValidation, validateRequest], createSkill)
-router.put('/:id', [requireAuth, ...idValidation, ...skillValidation, validateRequest], updateSkill)
-router.delete('/:id', [requireAuth, ...idValidation, validateRequest], deleteSkill)
+router.post('/', [requireAuth, authorize(PERMISSIONS.MANAGE_SKILLS), ...skillValidation, validateRequest], createSkill)
+router.put('/:id', [requireAuth, authorize(PERMISSIONS.MANAGE_SKILLS), ...idValidation, ...skillValidation, validateRequest], updateSkill)
+router.delete('/:id', [requireAuth, authorize(PERMISSIONS.MANAGE_SKILLS), ...idValidation, validateRequest], deleteSkill)
 
 module.exports = router

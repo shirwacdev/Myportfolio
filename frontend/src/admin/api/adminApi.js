@@ -42,6 +42,11 @@ export const loginAdmin = (payload) =>
   )
 
 export const getCurrentAdmin = () => request('/auth/me')
+export const changeAdminCredentials = (payload) =>
+  request('/auth/change-credentials', {
+    method: 'PATCH',
+    body: JSON.stringify(payload),
+  })
 
 export const fetchCollection = (resource) => request(`/${resource}`)
 export const fetchItem = (resource, id) => request(`/${resource}/${id}`)
@@ -78,6 +83,28 @@ export const updateSettings = (payload) =>
   request('/settings', {
     method: 'PUT',
     body: JSON.stringify(payload),
+  })
+
+export const fetchUsers = () => request('/users')
+export const fetchUsersMeta = () => request('/users/meta')
+export const createUser = (payload) =>
+  request('/users', {
+    method: 'POST',
+    body: JSON.stringify(payload),
+  })
+export const updateUser = (id, payload) =>
+  request(`/users/${id}`, {
+    method: 'PUT',
+    body: JSON.stringify(payload),
+  })
+export const updateUserPassword = (id, password) =>
+  request(`/users/${id}/password`, {
+    method: 'PATCH',
+    body: JSON.stringify({ password }),
+  })
+export const deleteUser = (id) =>
+  request(`/users/${id}`, {
+    method: 'DELETE',
   })
 
 export const getAdminApiBaseUrl = () => API_BASE_URL

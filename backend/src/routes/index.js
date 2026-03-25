@@ -8,6 +8,7 @@ const experienceRoutes = require('./experienceRoutes')
 const contactRoutes = require('./contactRoutes')
 const dashboardRoutes = require('./dashboardRoutes')
 const settingsRoutes = require('./settingsRoutes')
+const userRoutes = require('./userRoutes')
 
 const router = express.Router()
 
@@ -20,5 +21,6 @@ router.use('/experience', experienceRoutes)
 router.use('/contacts', contactRoutes)
 router.use('/dashboard', dashboardRoutes)
 router.use('/settings', settingsRoutes)
+router.use('/users', userRoutes)
 
 module.exports = router

@@ -3,6 +3,8 @@ const { body } = require('express-validator')
 const { getPublicSettings, getSettings, updateSettings } = require('../controllers/settingsController')
 const validateRequest = require('../middleware/validateRequest')
 const requireAuth = require('../middleware/requireAuth')
+const authorize = require('../middleware/authorize')
+const { PERMISSIONS } = require('../utils/permissions')
 
 const router = express.Router()
 
@@ -36,7 +38,7 @@ const settingsValidation = [
 ]
 
 router.get('/public', getPublicSettings)
-router.use(requireAuth)
+router.use(requireAuth, authorize(PERMISSIONS.MANAGE_SETTINGS))
 router.get('/', getSettings)
 router.put('/', [...settingsValidation, validateRequest], updateSettings)
 

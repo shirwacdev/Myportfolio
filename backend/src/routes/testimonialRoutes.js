@@ -1,4 +1,4 @@
-﻿const express = require('express')
+const express = require('express')
 const { body, param } = require('express-validator')
 const {
   getTestimonials,
@@ -9,6 +9,8 @@ const {
 } = require('../controllers/testimonialController')
 const validateRequest = require('../middleware/validateRequest')
 const requireAuth = require('../middleware/requireAuth')
+const authorize = require('../middleware/authorize')
+const { PERMISSIONS } = require('../utils/permissions')
 
 const router = express.Router()
 
@@ -29,8 +31,8 @@ const idValidation = [param('id').isMongoId().withMessage('Invalid id')]
 
 router.get('/', getTestimonials)
 router.get('/:id', [...idValidation, validateRequest], getTestimonialById)
-router.post('/', [requireAuth, ...testimonialValidation, validateRequest], createTestimonial)
-router.put('/:id', [requireAuth, ...idValidation, ...testimonialValidation, validateRequest], updateTestimonial)
-router.delete('/:id', [requireAuth, ...idValidation, validateRequest], deleteTestimonial)
+router.post('/', [requireAuth, authorize(PERMISSIONS.MANAGE_TESTIMONIALS), ...testimonialValidation, validateRequest], createTestimonial)
+router.put('/:id', [requireAuth, authorize(PERMISSIONS.MANAGE_TESTIMONIALS), ...idValidation, ...testimonialValidation, validateRequest], updateTestimonial)
+router.delete('/:id', [requireAuth, authorize(PERMISSIONS.MANAGE_TESTIMONIALS), ...idValidation, validateRequest], deleteTestimonial)
 
 module.exports = router

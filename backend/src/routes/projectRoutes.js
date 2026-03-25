@@ -1,4 +1,4 @@
-﻿const express = require('express')
+const express = require('express')
 const { body, param } = require('express-validator')
 const {
   getProjects,
@@ -10,6 +10,8 @@ const {
 } = require('../controllers/projectController')
 const validateRequest = require('../middleware/validateRequest')
 const requireAuth = require('../middleware/requireAuth')
+const authorize = require('../middleware/authorize')
+const { PERMISSIONS } = require('../utils/permissions')
 
 const router = express.Router()
 
@@ -32,8 +34,8 @@ const idValidation = [param('id').isMongoId().withMessage('Invalid id')]
 router.get('/', getProjects)
 router.get('/featured', getFeaturedProjects)
 router.get('/:id', [...idValidation, validateRequest], getProjectById)
-router.post('/', [requireAuth, ...projectValidation, validateRequest], createProject)
-router.put('/:id', [requireAuth, ...idValidation, ...projectValidation, validateRequest], updateProject)
-router.delete('/:id', [requireAuth, ...idValidation, validateRequest], deleteProject)
+router.post('/', [requireAuth, authorize(PERMISSIONS.MANAGE_PROJECTS), ...projectValidation, validateRequest], createProject)
+router.put('/:id', [requireAuth, authorize(PERMISSIONS.MANAGE_PROJECTS), ...idValidation, ...projectValidation, validateRequest], updateProject)
+router.delete('/:id', [requireAuth, authorize(PERMISSIONS.MANAGE_PROJECTS), ...idValidation, validateRequest], deleteProject)
 
 module.exports = router

@@ -1,4 +1,4 @@
-﻿const express = require('express')
+const express = require('express')
 const { body, param } = require('express-validator')
 const {
   getExperience,
@@ -9,6 +9,8 @@ const {
 } = require('../controllers/experienceController')
 const validateRequest = require('../middleware/validateRequest')
 const requireAuth = require('../middleware/requireAuth')
+const authorize = require('../middleware/authorize')
+const { PERMISSIONS } = require('../utils/permissions')
 
 const router = express.Router()
 
@@ -27,8 +29,8 @@ const idValidation = [param('id').isMongoId().withMessage('Invalid id')]
 
 router.get('/', getExperience)
 router.get('/:id', [...idValidation, validateRequest], getExperienceById)
-router.post('/', [requireAuth, ...experienceValidation, validateRequest], createExperience)
-router.put('/:id', [requireAuth, ...idValidation, ...experienceValidation, validateRequest], updateExperience)
-router.delete('/:id', [requireAuth, ...idValidation, validateRequest], deleteExperience)
+router.post('/', [requireAuth, authorize(PERMISSIONS.MANAGE_EXPERIENCE), ...experienceValidation, validateRequest], createExperience)
+router.put('/:id', [requireAuth, authorize(PERMISSIONS.MANAGE_EXPERIENCE), ...idValidation, ...experienceValidation, validateRequest], updateExperience)
+router.delete('/:id', [requireAuth, authorize(PERMISSIONS.MANAGE_EXPERIENCE), ...idValidation, validateRequest], deleteExperience)
 
 module.exports = router

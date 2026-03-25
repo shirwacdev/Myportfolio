@@ -1,4 +1,4 @@
-﻿const express = require('express')
+const express = require('express')
 const { body, param } = require('express-validator')
 const {
   submitContact,
@@ -9,6 +9,8 @@ const {
 } = require('../controllers/contactController')
 const validateRequest = require('../middleware/validateRequest')
 const requireAuth = require('../middleware/requireAuth')
+const authorize = require('../middleware/authorize')
+const { PERMISSIONS } = require('../utils/permissions')
 
 const router = express.Router()
 
@@ -42,13 +44,13 @@ const idValidation = [param('id').isMongoId().withMessage('Invalid id')]
 
 router.post('/', [...createContactValidation, validateRequest], submitContact)
 
-router.get('/', requireAuth, getContacts)
-router.get('/:id', [requireAuth, ...idValidation, validateRequest], getContactById)
+router.get('/', [requireAuth, authorize(PERMISSIONS.MANAGE_MESSAGES)], getContacts)
+router.get('/:id', [requireAuth, authorize(PERMISSIONS.MANAGE_MESSAGES), ...idValidation, validateRequest], getContactById)
 router.patch(
   '/:id/status',
-  [requireAuth, ...idValidation, ...statusValidation, validateRequest],
+  [requireAuth, authorize(PERMISSIONS.MANAGE_MESSAGES), ...idValidation, ...statusValidation, validateRequest],
   updateContactStatus,
 )
-router.delete('/:id', [requireAuth, ...idValidation, validateRequest], deleteContact)
+router.delete('/:id', [requireAuth, authorize(PERMISSIONS.MANAGE_MESSAGES), ...idValidation, validateRequest], deleteContact)
 
 module.exports = router

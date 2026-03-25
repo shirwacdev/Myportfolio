@@ -41,6 +41,21 @@ export const getAdminUser = () => {
   )
 }
 
+export const setAdminUser = (user) => {
+  if (!hasWindow()) return
+
+  const localToken = window.localStorage.getItem(TOKEN_KEY)
+  const sessionToken = window.sessionStorage.getItem(TOKEN_KEY)
+
+  if (localToken) {
+    window.localStorage.setItem(USER_KEY, JSON.stringify(user || {}))
+  }
+
+  if (sessionToken) {
+    window.sessionStorage.setItem(USER_KEY, JSON.stringify(user || {}))
+  }
+}
+
 export const clearAdminSession = () => {
   if (!hasWindow()) return
 
@@ -51,3 +66,14 @@ export const clearAdminSession = () => {
 }
 
 export const isAdminAuthenticated = () => Boolean(getAdminToken())
+
+export const hasAdminPermission = (permission) => {
+  if (!permission) return true
+
+  const user = getAdminUser()
+  if (!user) return false
+  if (user.role === 'super_admin') return true
+
+  const permissions = Array.isArray(user.permissions) ? user.permissions : []
+  return permissions.includes(permission)
+}

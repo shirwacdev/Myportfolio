@@ -1,4 +1,4 @@
-﻿const express = require('express')
+const express = require('express')
 const { body, param } = require('express-validator')
 const {
   getServices,
@@ -9,6 +9,8 @@ const {
 } = require('../controllers/serviceController')
 const validateRequest = require('../middleware/validateRequest')
 const requireAuth = require('../middleware/requireAuth')
+const authorize = require('../middleware/authorize')
+const { PERMISSIONS } = require('../utils/permissions')
 
 const router = express.Router()
 
@@ -26,8 +28,8 @@ const idValidation = [param('id').isMongoId().withMessage('Invalid id')]
 
 router.get('/', getServices)
 router.get('/:id', [...idValidation, validateRequest], getServiceById)
-router.post('/', [requireAuth, ...serviceValidation, validateRequest], createService)
-router.put('/:id', [requireAuth, ...idValidation, ...serviceValidation, validateRequest], updateService)
-router.delete('/:id', [requireAuth, ...idValidation, validateRequest], deleteService)
+router.post('/', [requireAuth, authorize(PERMISSIONS.MANAGE_SERVICES), ...serviceValidation, validateRequest], createService)
+router.put('/:id', [requireAuth, authorize(PERMISSIONS.MANAGE_SERVICES), ...idValidation, ...serviceValidation, validateRequest], updateService)
+router.delete('/:id', [requireAuth, authorize(PERMISSIONS.MANAGE_SERVICES), ...idValidation, validateRequest], deleteService)
 
 module.exports = router

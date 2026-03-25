@@ -7,6 +7,8 @@ import ExperiencePage from './pages/ExperiencePage'
 import TestimonialsPage from './pages/TestimonialsPage'
 import MessagesPage from './pages/MessagesPage'
 import SettingsPage from './pages/SettingsPage'
+import UsersPage from './pages/UsersPage'
+import RequirePermission from './components/RequirePermission'
 
 const AdminApp = () => (
   <Routes>
@@ -17,6 +19,14 @@ const AdminApp = () => (
     <Route path="experience" element={<ExperiencePage />} />
     <Route path="testimonials" element={<TestimonialsPage />} />
     <Route path="messages" element={<MessagesPage />} />
+    <Route
+      path="users"
+      element={(
+        <RequirePermission permission="manage_users">
+          <UsersPage />
+        </RequirePermission>
+      )}
+    />
     <Route path="settings" element={<SettingsPage />} />
     <Route path="*" element={<Navigate to="/admin" replace />} />
   </Routes>

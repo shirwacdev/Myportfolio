@@ -1,6 +1,6 @@
 const express = require('express')
 const { body } = require('express-validator')
-const { login, me } = require('../controllers/authController')
+const { login, me, changeCredentials } = require('../controllers/authController')
 const validateRequest = require('../middleware/validateRequest')
 const requireAuth = require('../middleware/requireAuth')
 
@@ -32,5 +32,26 @@ const loginValidation = [
 
 router.post('/login', [...loginValidation, validateRequest], login)
 router.get('/me', requireAuth, me)
+
+const changeCredentialsValidation = [
+  body('currentPassword')
+    .isLength({ min: 1 })
+    .withMessage('Current password is required'),
+  body('newUsername')
+    .optional({ values: 'falsy' })
+    .trim()
+    .isLength({ min: 3, max: 40 })
+    .withMessage('New username must be between 3 and 40 characters'),
+  body('newPassword')
+    .optional({ values: 'falsy' })
+    .isLength({ min: 5, max: 120 })
+    .withMessage('New password must be between 5 and 120 characters'),
+]
+
+router.patch(
+  '/change-credentials',
+  [requireAuth, ...changeCredentialsValidation, validateRequest],
+  changeCredentials,
+)
 
 module.exports = router

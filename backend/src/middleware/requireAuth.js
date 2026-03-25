@@ -1,5 +1,6 @@
-﻿const jwt = require('jsonwebtoken')
+const jwt = require('jsonwebtoken')
 const ApiError = require('../utils/apiError')
+const User = require('../models/User')
 
 const resolveToken = (req) => {
   const header = req.headers.authorization || ''
@@ -11,7 +12,7 @@ const resolveToken = (req) => {
   return req.headers['x-auth-token'] || null
 }
 
-const requireAuth = (req, res, next) => {
+const requireAuth = async (req, res, next) => {
   const token = resolveToken(req)
 
   if (!token) {
@@ -21,7 +22,27 @@ const requireAuth = (req, res, next) => {
   try {
     const secret = process.env.JWT_SECRET || 'dev-only-secret-change-me'
     const decoded = jwt.verify(token, secret)
-    req.user = decoded
+    const userId = decoded.sub || decoded.userId
+
+    if (!userId) {
+      return next(new ApiError('Invalid token payload', 401))
+    }
+
+    const user = await User.findById(userId).lean()
+
+    if (!user || !user.isActive) {
+      return next(new ApiError('Unauthorized', 401))
+    }
+
+    req.user = {
+      userId: user._id.toString(),
+      username: user.username,
+      email: user.email,
+      role: user.role,
+      permissions: user.permissions || [],
+      isActive: user.isActive,
+    }
+
     return next()
   } catch (error) {
     return next(new ApiError('Invalid or expired token', 401))
